@@ -685,6 +685,11 @@ void Sdlgl_putstr(winid window, int attr, const char *str)
       strncpy(toplines, str, TBUFSZ);   /* for Norep() */
       toplines[TBUFSZ - 1] = 0;
 
+      /* Cursor descriptions replace temporary text instead of accumulating. */
+      if ((attr & ATR_NOHISTORY) || win->message_nohistory)
+        Sdlgl_clear_nhwindow(window);
+      win->message_nohistory = (attr & ATR_NOHISTORY) != 0;
+      win->scrollback_enable = !win->message_nohistory;
       do_message_putstr(win, attr, str);
       break;
 

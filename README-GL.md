@@ -54,3 +54,10 @@ saving/restoring a test character, software rendering, ASCII toggle and zoom.
 Rebuilding with `build-gl.sh` preserved the test save byte-for-byte.
 This is a playable prototype, not a
 full-game regression test or a hardware-GPU compatibility certification.
+
+Cursor-description regression check: enter `;`, move repeatedly with `h`/`l`,
+then move from the player to an empty floor square. Only the current
+square's description should remain, without leftover characters or `[More]`
+prompts. Escape returns to normal messages. These temporary descriptions
+honour EvilHack's suppress-history flag and do not enter message scrollback.
+Verified with the OpenGL port on Xvfb.

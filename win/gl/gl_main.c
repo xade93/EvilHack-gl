@@ -70,7 +70,7 @@ static void Sdlgl_init_nhwindows_sdl(int *argcp, char **argv);
 #ifdef GL_GRAPHICS
 struct window_procs sdlgl_hardw_procs = 
 {
-    "GL", SDLGL_WC_FLAGS, WC2_FLUSH_STATUS, {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    "GL", SDLGL_WC_FLAGS, WC2_FLUSH_STATUS | WC2_SUPPRESS_HIST, {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     Sdlgl_init_nhwindows_gl,
     Sdlgl_player_selection, Sdlgl_askname,
     Sdlgl_get_nh_event,
@@ -115,7 +115,7 @@ struct window_procs sdlgl_hardw_procs =
 #ifdef SDL_GRAPHICS
 struct window_procs sdlgl_softw_procs = 
 {
-    "SDL", SDLGL_WC_FLAGS, WC2_FLUSH_STATUS, {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    "SDL", SDLGL_WC_FLAGS, WC2_FLUSH_STATUS | WC2_SUPPRESS_HIST, {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     Sdlgl_init_nhwindows_sdl,
     Sdlgl_player_selection, Sdlgl_askname,
     Sdlgl_get_nh_event,

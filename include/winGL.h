@@ -998,6 +998,7 @@ struct TextWindow
    * should also call sdlgl_more() when this value is non-zero.
    */
   int fresh_lines;
+  int message_nohistory;
 
   /* for NHW_MESSAGE windows: true if the next putstr() should be
    * placed on a new line, even if it fits on the previous one.
