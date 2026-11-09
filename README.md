@@ -8,6 +8,7 @@ experience that the original
   2. QoL from ncurses interface e.g. visual HP/MP bars
   3. misc updates I find interesting along the way while trying to be faithful to original experience
 
+Disclosure: LLMs are heavily used in the process, although they are limited to frontend only and should not touch underlying Evilhack logic.
 
 ## EvilHack
 
