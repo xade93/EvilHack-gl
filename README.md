@@ -10,6 +10,10 @@ experience that the original
 
 Disclosure: LLMs are heavily used in the process, although they are limited to frontend only and should not touch underlying Evilhack logic.
 
+Screenshot:
+<img width="1268" height="795" alt="image" src="https://github.com/user-attachments/assets/0e4849a1-0c90-442a-b0a3-7b353f88ab30" />
+
+
 ## EvilHack
 
 EvilHack is a NetHack variant that is designed to be a much more challenging
