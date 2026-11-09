@@ -1,3 +1,14 @@
+## Goal of this repo
+
+- "**Nethack**" is a roguelike game originated 1987 and has seen continuous development
+- "**Evilhack**" is a variant of Nethack that is designed to be a much more challenging
+experience that the original
+- **This repo** (evilhack-gl) aims to refactor existing GUI shipped with Evilhack, incorporating the visual effects from
+  1. `glhack` and its slashem port
+  2. QoL from ncurses interface e.g. visual HP/MP bars
+  3. misc updates I find interesting along the way while trying to be faithful to original experience
+
+
 ## EvilHack
 
 EvilHack is a NetHack variant that is designed to be a much more challenging
