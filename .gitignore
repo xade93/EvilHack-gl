@@ -67,3 +67,8 @@ CLAUDE.md
 dat/md*
 .claude/
 doc/claude/
+
+# Local SDL/GL build and player data
+/local/
+
+__pycache__/

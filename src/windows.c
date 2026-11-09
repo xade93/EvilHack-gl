@@ -3,6 +3,9 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#if defined(GL_GRAPHICS) || defined(SDL_GRAPHICS)
+#include "winGL.h"
+#endif
 #if defined (EXTRAINFO_FN) && defined(UNIX)
 #include <sys/stat.h>
 #endif
@@ -106,6 +109,12 @@ static struct win_choices {
     void *FDECL((*chain_routine), (int, int, void *, void *, void *));
 #endif
 } winchoices[] = {
+#ifdef GL_GRAPHICS
+    { &sdlgl_hardw_procs, 0 CHAINR(0) },
+#endif
+#ifdef SDL_GRAPHICS
+    { &sdlgl_softw_procs, 0 CHAINR(0) },
+#endif
 #ifdef TTY_GRAPHICS
     { &tty_procs, win_tty_init CHAINR(0) },
 #endif
