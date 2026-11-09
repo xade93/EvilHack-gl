@@ -82,3 +82,15 @@ This checks empty/partial/full title bars, HP colour thresholds, preservation
 of title text, changing maxima, power colours (including wrapped fields),
 zero power capacity, and widths from 1 to 128 text cells. Appearance checks
 for the revised layout are left to interactive testing.
+
+Control-key regression test (no display required):
+
+```sh
+cc -std=gnu17 -DGL_GRAPHICS -DUSE_TILES -Iinclude -ffunction-sections -fdata-sections tests/key_input.c -Wl,--gc-sections -o /tmp/evilhack-key-test
+/tmp/evilhack-key-test
+```
+
+The real SDL key converter must produce control codes even when the backend
+supplies a printable Unicode letter. This covers both Ctrl keys, Shift,
+pretranslated and absent Unicode, and unchanged plain/Alt-letter input.
+Ctrl+D should prompt for a kick direction rather than opening the drop menu.

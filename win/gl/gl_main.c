@@ -670,7 +670,9 @@ static int convert_keysym(int sym, int unicode, int mod)
   int ctrl  = mod & KMOD_CTRL;
   int alt   = mod & KMOD_ALT;
 
-  (void) ctrl;
+  /* SDL backends may leave unicode printable for Ctrl+letter. */
+  if (ctrl && sym >= SDLK_a && sym <= SDLK_z)
+    return C('a' + sym - SDLK_a);
   
   /* CTRL + letter ? */
   if (0x01 <= unicode && unicode <= 0x1F)
