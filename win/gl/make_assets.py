@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Convert EvilHack's validated native tiles to glHack PNG atlases."""
 from pathlib import Path
+import os
 import re
 import subprocess
 import tempfile
@@ -8,7 +9,8 @@ import tempfile
 from PIL import Image
 
 root = Path(__file__).resolve().parents[2]
-subprocess.run(["make", "-C", str(root / "util"), "tile2bmp"], check=True)
+subprocess.run(["make", "PREFIX=" + os.environ.get("EVILHACK_PREFIX", str(root / "local")),
+                "-C", str(root / "util"), "tile2bmp"], check=True)
 with tempfile.TemporaryDirectory() as tmp:
     bmp = Path(tmp) / "tiles.bmp"
     result = subprocess.run(

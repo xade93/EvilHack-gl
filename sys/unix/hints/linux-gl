@@ -7,7 +7,7 @@
 # Local Linux SDL/OpenGL build, with tty retained as a fallback.
 
 # Typical install path for normal user (non-root)
-PREFIX=/home/xade/slashem/evilhack/local
+PREFIX=$(if $(EVILHACK_PREFIX),$(EVILHACK_PREFIX),$(HOME)/.local)
 HACKDIR=$(PREFIX)/games/evilhackdir
 
 # Default install path (assumes running at root)

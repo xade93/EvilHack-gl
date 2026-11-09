@@ -32,11 +32,34 @@ actions, and keeps inventory selection predictable. Resumed characters retain
 saved gameplay options: use `O` to enable `autopickup` and set `pickup_types`
 to `$` for an existing character. New characters use the config defaults.
 
+Install for your desktop (no sudo):
+
+```sh
+./install-desktop-gl.sh
+```
+
+This builds a standalone installation under `~/.local/games/evilhackdir/`,
+adds `~/.local/bin/evilhack-gl`, and registers **EvilHack GL** in your app
+menu with the bundled game icon. Its context menu offers software rendering.
+The checkout can subsequently be moved or removed without breaking that
+installation. Save and exit the game before installing or updating.
+
+On first install, saved characters and config are copied from this checkout's
+`local/` installation; the originals are left intact. Subsequent installs
+preserve the installed saves and config. The two installations keep separate
+progress after that initial copy. Re-run the installer to update the desktop
+version; `run-gl.sh` continues to launch the checkout's local version.
+
+`EVILHACK_PREFIX` overrides the install prefix, and `XDG_DATA_HOME` controls
+the desktop-entry/icon location. Due to upstream makefile quoting, build
+prefixes may contain only letters, digits, underscores, dots, slashes and
+hyphens. No system packages are installed automatically.
+
 Rebuild with `./build-gl.sh`. Dependencies are a C compiler, make, flex,
 bison, groff, SDL 1.2-compatible development files (`sdl-config`), OpenGL,
-libpng, ncurses, Python 3 and Pillow. The installation prefix in
-`sys/unix/hints/linux-gl` is specific to this checkout; change it if moving
-the project. The script uses `make update` for an existing installation;
+libpng, ncurses, Python 3 and Pillow. The build prefix defaults to `local/` in this checkout and can be
+changed with `EVILHACK_PREFIX=/absolute/path`. Changing it triggers a clean
+rebuild because the engine embeds installation paths. The script uses `make update` for an existing installation;
 do not use upstream `make install` on an installation containing saves,
 because that target deletes its playground.
 
@@ -94,3 +117,10 @@ The real SDL key converter must produce control codes even when the backend
 supplies a printable Unicode letter. This covers both Ctrl keys, Shift,
 pretranslated and absent Unicode, and unchanged plain/Alt-letter input.
 Ctrl+D should prompt for a kick direction rather than opening the drop menu.
+
+Desktop-installer regression check: make a scratch installation with
+`EVILHACK_PREFIX=/tmp/evilhack-install-test XDG_DATA_HOME=/tmp/evilhack-desktop-test ./install-desktop-gl.sh`,
+then run `python3 tests/desktop_install.py /tmp/evilhack-install-test /tmp/evilhack-desktop-test`.
+This validates the desktop entry and icon, verifies compiled paths, and
+checks that reinstalling preserves saved characters and configuration.
+The test requires `desktop-file-validate`.
