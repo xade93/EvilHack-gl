@@ -613,6 +613,11 @@ E int FDECL(sdlgl_save_ppm_file, (const char *, const unsigned char *,
 #define B_BLUE     TXT_MAKE(0,0,4)
 #define B_MAGENTA  TXT_MAKE(4,0,4)
 
+/* Muted status colours; retain black-text contrast over HP fills. */
+#define STATUS_HEALTHY TXT_MAKE(2,3,2)
+#define STATUS_CAUTION TXT_MAKE(3,3,2)
+#define STATUS_DANGER  TXT_MAKE(3,2,2)
+
 #define TILECOL_UNUSED  0x7EEE
 
 struct FontCache
@@ -1077,6 +1082,9 @@ E void FDECL(sdlgl_internal_motion_handler, (SDL_MouseMotionEvent *));
  * GL_MENU
  */
 
+E void FDECL(Sdlgl_status_enablefield, (int,const char *,const char *,BOOLEAN_P));
+E void FDECL(Sdlgl_status_update,
+    (int,genericptr_t,int,int,int,unsigned long *));
 E void FDECL(Sdlgl_start_menu, (winid));
 E void FDECL(Sdlgl_add_menu, (winid,int,const ANY_P *,
     CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));

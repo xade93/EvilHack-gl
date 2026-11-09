@@ -49,8 +49,11 @@ The runtime also checks tile-map bounds before play. This verifies coverage
 and ordering, not that every upstream picture is visually distinctive.
 
 The port uses EvilHack's supplied foreground/background glyphs and generic
-status formatter, including variant-specific conditions. Status is plain
-text, without configurable status highlighting. Legacy glHack's 64px
+status formatter, including variant-specific conditions. The character's name and title double as the HP bar, with a filled background
+behind the text. HP uses muted sage above 50%, soft amber at 21–50%, and dusty red at 20%
+or below. Exact HP and power values remain in the stats line. Power text is
+amber at half capacity and red at one fifth; there is no separate MP bar.
+The remaining status is plain text, without configurable highlighting. Legacy glHack's 64px
 isometric artwork is not supplied. Message scrollback is session-local;
 the generic message-history save hooks do not persist it.
 
@@ -67,3 +70,15 @@ square's description should remain, without leftover characters or `[More]`
 prompts. Escape returns to normal messages. These temporary descriptions
 honour EvilHack's suppress-history flag and do not enter message scrollback.
 Verified with the OpenGL port on Xvfb.
+
+Status-bar regression test (no display required):
+
+```sh
+cc -std=gnu17 -DGL_GRAPHICS -DUSE_TILES -Iinclude tests/status_bars.c win/gl/gl_stat.c -o /tmp/evilhack-status-test
+/tmp/evilhack-status-test
+```
+
+This checks empty/partial/full title bars, HP colour thresholds, preservation
+of title text, changing maxima, power colours (including wrapped fields),
+zero power capacity, and widths from 1 to 128 text cells. Appearance checks
+for the revised layout are left to interactive testing.

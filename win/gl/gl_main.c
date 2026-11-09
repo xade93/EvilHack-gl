@@ -104,8 +104,8 @@ struct window_procs sdlgl_hardw_procs =
     Sdlgl_start_screen, Sdlgl_end_screen,
     genl_outrip, Sdlgl_preference_update,
     genl_getmsghistory, genl_putmsghistory,
-    genl_status_init, genl_status_finish, genl_status_enablefield,
-    genl_status_update, genl_can_suspend_no
+    genl_status_init, genl_status_finish, Sdlgl_status_enablefield,
+    Sdlgl_status_update, genl_can_suspend_no
 };
 #endif
 
@@ -149,8 +149,8 @@ struct window_procs sdlgl_softw_procs =
     Sdlgl_start_screen, Sdlgl_end_screen,
     genl_outrip, Sdlgl_preference_update,
     genl_getmsghistory, genl_putmsghistory,
-    genl_status_init, genl_status_finish, genl_status_enablefield,
-    genl_status_update, genl_can_suspend_no
+    genl_status_init, genl_status_finish, Sdlgl_status_enablefield,
+    Sdlgl_status_update, genl_can_suspend_no
 };
 #endif
 

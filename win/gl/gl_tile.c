@@ -1105,6 +1105,23 @@ static void draw_tilewindow(struct TileWindow *win)
     sdlgl_finish_tile_draw();
   }
 
+  /* Text backgrounds are drawn before batching the foreground glyphs. */
+  if (win->is_text) {
+    for (y = 0; y < win->total_h; ++y) {
+      sy = win->scr_y - win->pan_y + y * sh;
+      if (sy + sfh <= bottom || sy >= top)
+        continue;
+      for (x = 0; x < win->total_w; ++x) {
+        unsigned background = win->tiles[y * win->total_w + x].u.col >> 8;
+        sx = win->scr_x - win->pan_x + x * sw;
+        if (background && sx + sfw > left && sx < right)
+          sdlgl_draw_background(sx, sy, sw, sh,
+              sdlgl_text_colors[background & 0xff],
+              win->mapped_idx + 1, win->scr_depth);
+      }
+    }
+  }
+
   /* second pass: */
 
   sdlgl_begin_tile_draw(1, (win->set->lap_w || win->set->lap_h));
