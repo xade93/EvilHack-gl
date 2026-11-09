@@ -26,6 +26,12 @@ can be supplied through `EVILHACKGLOPTIONS`, for example
 `EVILHACKGLOPTIONS=windowed,mode:1280x800 ./run-gl.sh`.
 Existing system installations and their saves are not used.
 
+The default config enables gold-only autopickup (plus recovery of thrown
+ammunition), prompts before becoming burdened, adds confirmations for risky
+actions, and keeps inventory selection predictable. Resumed characters retain
+saved gameplay options: use `O` to enable `autopickup` and set `pickup_types`
+to `$` for an existing character. New characters use the config defaults.
+
 Rebuild with `./build-gl.sh`. Dependencies are a C compiler, make, flex,
 bison, groff, SDL 1.2-compatible development files (`sdl-config`), OpenGL,
 libpng, ncurses, Python 3 and Pillow. The installation prefix in
