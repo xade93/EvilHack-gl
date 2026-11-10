@@ -28,7 +28,6 @@ extern int NDECL(extcmd_via_menu);
 #define DEPTH_ASKNAME   8
 
 #define MAX_NAME_LEN     20
-#define MAX_EXT_CMD_LEN  20
 
 
 void sdlgl_emul_startup(void)
@@ -486,222 +485,114 @@ void Sdlgl_getlin(const char *query, char *bufp)
 /* ---------------------------------------------------------------- */
 
 
-#define VALID_EXT_CH(ch)  ('a' <= (ch) && (ch) <= 'z')
-
-/* fills in `comp_tex' with an "[abcd]" completion string.  If there
- * was a single match, returns the extcmdlist index for it, otherwise
- * returns -1.
- */
-static int make_completion_text(const char *word, int len,
-    char *comp_tex)
+/* Exact names work even when their autocomplete option is disabled. */
+static int match_ext_cmd(const char *word)
 {
-  int i, pos, last = -1;
-  int letters[26] = { 0, };
-  int matches;
-
-  /* special case for zero length: use stock string */
-  if (len == 0)
-  {
-    strcpy(comp_tex, "[a-z?]");
+  int i, match = -1, matches = 0;
+  size_t len = strlen(word);
+  if (!len)
     return -1;
+  for (i = 0; extcmdlist[i].ef_txt; ++i) {
+    const struct ext_func_tab *cmd = &extcmdlist[i];
+    if ((cmd->flags & CMD_NOT_AVAILABLE) || (!wizard && (cmd->flags & WIZMODECMD)))
+      continue;
+    if (!strcmp(word, cmd->ef_txt))
+      return i;
+    if ((cmd->flags & AUTOCOMPLETE) && !strncmp(word, cmd->ef_txt, len)) {
+      match = i;
+      ++matches;
+    }
   }
-  
-  /* default to empty string */
-  comp_tex[0] = 0;
-    
-  for (i=matches=0; extcmdlist[i].ef_txt; i++)
-  {
-    const char *cmd = extcmdlist[i].ef_txt;
-
-    if (! VALID_EXT_CH(cmd[0]))
-      continue;
-
-    if (strlen(cmd) <= len)
-      continue;
-
-    if (strncmp(word, cmd, len) != 0)
-      continue;
-
-    if (! VALID_EXT_CH(cmd[len]))
-      continue;
-
-    letters[cmd[len] - 'a'] = 1;
-    matches++;
-    last = i;
-  }
-  
-  if (matches == 0)
-    return -1;
-  else if (matches == 1)
-    return last;
-
-  /* build match list string */
-  pos = 0;
-  
-  comp_tex[pos++] = '[';
-
-  for (i=0; i < 26; i++)
-    if (letters[i])
-      comp_tex[pos++] = 'a' + i;
-
-  comp_tex[pos++] = ']';
-  comp_tex[pos] = 0;
-
-  return -1;
+  return matches == 1 ? match : -1;
 }
 
-/* -AJA- I think it's cleaner to have a whole new routine rather than
- *       try to shoe-horn the extended command completion stuff into
- *       the existing do_getlin() routine.
- */
 static int do_get_ext_cmd(struct TextWindow *win)
 {
-  char buffer[BUFSZ + 1 /* for NUL */];
-  char comp_buf[BUFSZ];
-
-  int len = 0;
-  int i, ch;
-  int use_menu = 0;
+  char buffer[BUFSZ] = "";
+  int len = 0, ch, match = -1, use_menu = 0;
+  int limit = max(0, min(BUFSZ - 1, win->show_w - 3));
 
   sdlgl_enable_cursor(win, 1);
   win->write_col = L_GREY;
-
-  /* loop invariant: buffer[len] == 0 */
-  buffer[0] = 0;
-  comp_buf[0] = 0;
-  
-  (void) make_completion_text(buffer, len, comp_buf);
-
-  for (;;)
-  {
-    /* redraw the line, then flush */
+  for (;;) {
+    match = match_ext_cmd(buffer);
     sdlgl_home(win);
     sdlgl_clear_end(win);
-
-    sdlgl_putc(win, '#');
-    sdlgl_putc(win, ' ');
-    sdlgl_puts(win, buffer); 
-    sdlgl_puts(win, comp_buf);
-
+    sdlgl_puts(win, "# ");
+    sdlgl_puts(win, buffer);
+    /* The suggestion is display-only; the cursor stays after the typed prefix. */
+    if (match >= 0 && len < limit && extcmdlist[match].ef_txt[len])
+      sdlgl_store_str(win->base, win->write_x, win->write_y,
+                       extcmdlist[match].ef_txt + len, limit - len, GREY);
     sdlgl_flush();
-    
-    /* process a key */
-    ch = sdlgl_get_key(POSKEY_ALLOW_REPEAT);
 
-    if (ch == C('p'))
-    {
+    ch = sdlgl_get_key(POSKEY_ALLOW_REPEAT);
+    if (ch == C('p')) {
       Sdlgl_doprev_message();
       continue;
     }
-
     if (sdlgl_alt_prev)
       sdlgl_remove_scrollback();
-
-    if (ch == '\033')  /* escape key ? */
-    {
-      len = 0;
+    if (ch == '\033') {
+      match = -1;
       break;
     }
-
-    if (ch == '\n' || ch == '\r')  /* return ? */
+    if (ch == '\n' || ch == '\r')
+      break;
+    if (ch == '\b' || ch == 127) {
+      if (!len) {
+        match = -1;
         break;
-
-    if (ch == '\b')  /* backspace ? */
-    {
-      if (len == 0)
-        break;
-
-      assert(len > 0);
-
-      buffer[--len] = 0;
-
-      (void) make_completion_text(buffer, len, comp_buf);
+      }
+      buffer[--len] = '\0';
       continue;
     }
-
-    if (ch == '?' && len == 0)
-    {
-      len = 0;
+    if (ch == C('u')) {
+      buffer[len = 0] = '\0';
+      continue;
+    }
+    if (ch == '?' && !len) {
       use_menu = 1;
       break;
     }
-    
-    /* only lowercase letters please */
-    if (! VALID_EXT_CH(ch) || len >= MAX_EXT_CMD_LEN)
-    {
-      /* beep ? */
-      continue;
-    }
-
-    buffer[len++] = ch;
-    buffer[len] = 0;
-
-    /* do completion */
-    i = make_completion_text(buffer, len, comp_buf);
-
-    if (i >= 0)
-    {
-      strcpy(buffer, extcmdlist[i].ef_txt);
-      len = strlen(buffer);
+    if (ch >= 'A' && ch <= 'Z')
+      ch += 'a' - 'A';
+    if (ch >= ' ' && ch <= '~' && len < limit) {
+      buffer[len++] = ch;
+      buffer[len] = '\0';
     }
   }
 
   sdlgl_enable_cursor(win, 0);
   sdlgl_clear(win);
   sdlgl_home(win);
-
   if (use_menu)
     return extcmd_via_menu();
-
-  if (len == 0)
-    return -1;
-
-  /* find command, show message if not found */
-  for (i=0; extcmdlist[i].ef_txt; i++)
-    if (strcmp(extcmdlist[i].ef_txt, buffer) == 0)
-      return i;
-
-  pline("%s: unknown extended command.", buffer);
-  return -1;
+  if (match < 0 && len && ch != '\033' && ch != '\b' && ch != 127)
+    pline("%s: unknown extended command.", buffer);
+  return match;
 }
 
-/*
- * Read in an extended command, doing command line completion.  We
- * stop when we have found enough characters to make a unique command.
- */
 int Sdlgl_get_ext_cmd(void)
 {
   struct TextWindow *win;
-
   int cmd;
 
-#if 0
   if (iflags.extmenu)
     return extcmd_via_menu();
-#endif
-   
   if (WIN_MESSAGE == WIN_ERR)
     return -1;
-
   win = text_wins[WIN_MESSAGE];
   assert(win);
   assert(win->base);
-
   if (sdlgl_alt_prev)
     sdlgl_remove_scrollback();
-
   if (win->fresh_lines > 0)
     sdlgl_more(win);
-
   Sdlgl_clear_nhwindow(WIN_MESSAGE);
-
-  /* disable scrollback while we control the message win */
   win->scrollback_enable = 0;
-  
   cmd = do_get_ext_cmd(win);
-
   win->scrollback_enable = 1;
-
   return cmd;
 }
 

@@ -124,3 +124,17 @@ then run `python3 tests/desktop_install.py /tmp/evilhack-install-test /tmp/evilh
 This validates the desktop entry and icon, verifies compiled paths, and
 checks that reinstalling preserves saved characters and configuration.
 The test requires `desktop-file-validate`.
+
+Extended commands (`#`) keep typed input separate from a dimmed completion.
+Enter accepts a unique suggestion or an exact name; Backspace edits your
+input, Ctrl+U clears it, and Escape cancels. Type `#?` to browse the native
+command menu, or set `OPTIONS=extmenu` to use that menu by default.
+Autocomplete honours `AUTOCOMPLETE` configuration and filters unavailable
+and wizard-only commands during normal play.
+
+Extended-command regression test (no graphics output):
+
+```sh
+cc -std=gnu17 -DGL_GRAPHICS -DUSE_TILES -Iinclude -ffunction-sections -fdata-sections tests/ext_commands.c -Wl,--gc-sections -o /tmp/evilhack-extcmd-test
+/tmp/evilhack-extcmd-test
+```
