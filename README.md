@@ -1,14 +1,15 @@
 ## Goal of this repo
 
-- "**Nethack**" is a roguelike game originated 1987 and has seen continuous development
+- "**Nethack**" is a roguelike game originated 1987 that involves protagonist fetching Amulet of Yendor from a dungeon
 - "**Evilhack**" is a variant of Nethack that is designed to be a much more challenging
 experience that the original
-- **This repo** (evilhack-gl) aims to refactor existing GUI shipped with Evilhack, incorporating the visual effects from
-  1. `glhack` and its slashem port
-  2. QoL from ncurses interface e.g. visual HP/MP bars
+- "**glhack**" is a SDL2/OpenGL based tile version of original nethack
+- **This repo** ("evilhack-gl") aims to refactor existing GUI shipped with Evilhack, incorporating the visual effects from
+  1. `glhack` and its SLASH'EM port
+  2. QoL from ncurses interface e.g. visual HP/MP bars, autodim message histories, extended command prompts
   3. misc updates I find interesting along the way while trying to be faithful to original experience
 
-Disclosure: LLMs are heavily used in the process, although they are limited to frontend only and should not touch underlying Evilhack logic.
+**Disclosure**: LLMs are heavily used in the process, although they are limited to frontend only and should not touch underlying Evilhack logic.
 
 Screenshot:
 <img width="1268" height="795" alt="image" src="https://github.com/user-attachments/assets/0e4849a1-0c90-442a-b0a3-7b353f88ab30" />
