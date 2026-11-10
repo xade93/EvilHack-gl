@@ -80,6 +80,22 @@ The remaining status is plain text, without configurable highlighting. Legacy gl
 isometric artwork is not supplied. Message scrollback is session-local;
 the generic message-history save hooks do not persist it.
 
+The message panel keeps five rows visible by default. New output is light
+grey; messages from earlier commands dim to medium grey and scroll upward
+as new lines arrive. Ctrl+P recalls older output. `OPTIONS=vary_msgcount:5`
+sets the panel height (2–8 rows). Prompts and temporary cursor descriptions
+still clear their text, and More pauses still protect unread output.
+
+Message-panel regression test (no display required):
+
+```sh
+cc -std=gnu17 -DGL_GRAPHICS -DUSE_TILES -Iinclude -ffunction-sections -fdata-sections tests/message_panel.c -Wl,--gc-sections -o /tmp/evilhack-message-test
+/tmp/evilhack-message-test
+```
+
+This checks retained lines, dimming, scrollback order, More pauses,
+temporary descriptions, prompt clearing and legacy clearing behavior.
+
 Verified on a private Xvfb display: OpenGL startup with Mesa software GL,
 character creation, tiled map, inventory, keyboard movement, status fields,
 saving/restoring a test character, software rendering, ASCII toggle and zoom.

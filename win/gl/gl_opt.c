@@ -37,7 +37,7 @@ static int fontsize_override = 0;
 
 /* booleans... */
 int sdlgl_def_zoom    = 0;
-int sdlgl_msg_dim     = 0;
+int sdlgl_msg_dim     = 1;
 int sdlgl_alt_prev    = 0;
 int sdlgl_reformat    = 0;
 int sdlgl_shrink_wrap = 0;

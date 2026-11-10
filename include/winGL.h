@@ -203,7 +203,7 @@ extern int sdlgl_depth;
 #define DEF_TILE_HEIGHT      32
 #define DEF_FONTSIZ_MAP      14
 #define DEF_FONTSIZ_TEXT     20
-#define DEF_VARY_MSGCOUNT    3
+#define DEF_VARY_MSGCOUNT    5
 #define DEF_SCROLL_MARGIN    3
 
 /* sdlgl_def_zoom can take on this value (text-mode view) */
@@ -994,7 +994,7 @@ struct TextWindow
 
   /* for NHW_MESSAGE windows: number of "fresh" lines, i.e. lines that
    * have been written onto the message window since clear_nhwindow()
-   * or the last do_more().  Initial state is 0, meaning "blank".
+   * or the last do_more().  Initial state is 0, meaning no unread lines.
    * After a [More] it is also 0.  As soon as this value becomes the
    * same as the `show_h' field, that's when we display the more text
    * and wait for a key.
@@ -1013,7 +1013,7 @@ struct TextWindow
   /* for NHW_MESSAGE windows: this field is for the scroll-back
    * capability (^P).  The tile window is normally unmapped, silently
    * recording lines that scroll off the screen (except empty lines).
-   * Clearing the msg window is equivalent to fully scrolling it up.
+   * Explicitly resetting the msg window fully scrolls it up.
    */
   struct TileWindow *scrollback;
 
@@ -1067,6 +1067,7 @@ E int NDECL(Sdlgl_doprev_message);
 E void NDECL(sdlgl_win_startup);
 E void NDECL(sdlgl_win_shutdown);
 E void FDECL(sdlgl_more, (struct TextWindow *));
+E void FDECL(sdlgl_reset_message, (struct TextWindow *));
 E void FDECL(sdlgl_adjust_scrollback, (struct TextWindow *, int));
 E void NDECL(sdlgl_remove_scrollback);
 E void FDECL(sdlgl_pan_window, (int, int, int));

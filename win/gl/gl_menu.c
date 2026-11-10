@@ -842,7 +842,7 @@ char Sdlgl_yn_function(const char *query, const char *resp, CHAR_P def)
   if (win->fresh_lines > 0)
     sdlgl_more(win);
 
-  Sdlgl_clear_nhwindow(WIN_MESSAGE);
+  sdlgl_reset_message(win);
   
   /* disable scrollback while we control the message win */
   win->scrollback_enable = 0;

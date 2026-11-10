@@ -49,6 +49,7 @@ int extcmd_via_menu(void) { ++menu_calls; return 77; }
 void pline(const char *fmt, ...) { ++errors; }
 void sdlgl_more(struct TextWindow *w) {}
 void Sdlgl_clear_nhwindow(winid w) {}
+void sdlgl_reset_message(struct TextWindow *w) {}
 
 static int enter(struct TextWindow *win, const char *input)
 {

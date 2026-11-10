@@ -472,7 +472,7 @@ void Sdlgl_getlin(const char *query, char *bufp)
   if (win->fresh_lines > 0)
     sdlgl_more(win);
 
-  Sdlgl_clear_nhwindow(WIN_MESSAGE);
+  sdlgl_reset_message(win);
 
   /* disable scrollback while we control the message win */
   win->scrollback_enable = 0;
@@ -589,7 +589,7 @@ int Sdlgl_get_ext_cmd(void)
     sdlgl_remove_scrollback();
   if (win->fresh_lines > 0)
     sdlgl_more(win);
-  Sdlgl_clear_nhwindow(WIN_MESSAGE);
+  sdlgl_reset_message(win);
   win->scrollback_enable = 0;
   cmd = do_get_ext_cmd(win);
   win->scrollback_enable = 1;

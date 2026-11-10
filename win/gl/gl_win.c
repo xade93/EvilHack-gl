@@ -119,6 +119,16 @@ void Sdlgl_destroy_nhwindow(winid window)
     sdlgl_update_mouse_location(0);
 }
 
+/* Prompts and temporary descriptions still need a genuinely blank panel. */
+void sdlgl_reset_message(struct TextWindow *win)
+{
+  sdlgl_putc(win, C('l'));
+  sdlgl_home(win);
+  win->fresh_lines = 0;
+  win->more_escaped = 0;
+  win->want_new_line = 0;
+}
+
 void Sdlgl_clear_nhwindow(winid window)
 {
   struct TextWindow *win;
@@ -135,11 +145,20 @@ void Sdlgl_clear_nhwindow(winid window)
 
   if (win->type == NHW_MESSAGE)
   {
-    sdlgl_putc(win, C('l'));  /* ^L: clear */
-    sdlgl_home(win);
-
+    if (!sdlgl_msg_dim || win->show_h == 1 || win->message_nohistory
+        || !win->scrollback_enable) {
+      sdlgl_reset_message(win);
+      return;
+    }
+    for (y = 0; y < win->show_h; ++y)
+      for (x = 0; x < win->show_w; ++x) {
+        struct TilePair *tile = &win->base->tiles[y * win->show_w + x];
+        if (tile->fg != TILE_EMPTY)
+          sdlgl_store_char(win->base, x, y, TILE_2_CHAR(tile->fg), GREY);
+      }
     win->fresh_lines = 0;
     win->more_escaped = 0;
+    win->want_new_line = 1;
     return;
   }
 
@@ -687,7 +706,7 @@ void Sdlgl_putstr(winid window, int attr, const char *str)
 
       /* Cursor descriptions replace temporary text instead of accumulating. */
       if ((attr & ATR_NOHISTORY) || win->message_nohistory)
-        Sdlgl_clear_nhwindow(window);
+        sdlgl_reset_message(win);
       win->message_nohistory = (attr & ATR_NOHISTORY) != 0;
       win->scrollback_enable = !win->message_nohistory;
       do_message_putstr(win, attr, str);
