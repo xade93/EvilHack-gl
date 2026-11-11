@@ -420,12 +420,8 @@ static void sw_draw_extra_shape(struct TileWindow *win, struct ExtraShape *shape
   }
 }
 
-static void sw_draw_cursor(struct TileWindow *win)
+static void sw_draw_cursor(struct TileWindow *win, int x, int y, int w)
 {
-  int x = win->curs_x;
-  int y = win->curs_y;
-  int w = win->curs_w;
-
   int sx, sy, sw, sh;
 
   Uint32 c = rgb2sdl(sdlgl_surf->format, win->curs_color);

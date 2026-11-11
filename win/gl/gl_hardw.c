@@ -534,12 +534,8 @@ static void hw_draw_extra_shape(struct TileWindow *win,
   }
 }
 
-static void hw_draw_cursor(struct TileWindow *win)
+static void hw_draw_cursor(struct TileWindow *win, int x, int y, int w)
 {
-  int x = win->curs_x;
-  int y = win->curs_y;
-  int w = win->curs_w;
-
   rgbcol_t col = win->curs_color;
 
   int sx, sy, sw, sh;

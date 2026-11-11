@@ -471,6 +471,9 @@ struct TileWindow
    * Negative values mean that no cursor should be drawn.
    */
   int curs_x, curs_y, curs_w;
+
+  /* Last tile outlined for the invisible hero. */
+  int hero_outline_x, hero_outline_y;
  
   /* cursor type: 1 for block, 0 for outline */
   int curs_block;
@@ -688,7 +691,7 @@ struct rendering_procs
       int, int));
   void FDECL((*draw_extra_shape), (struct TileWindow *,
       struct ExtraShape *));
-  void FDECL((*draw_cursor), (struct TileWindow *));
+  void FDECL((*draw_cursor), (struct TileWindow *, int, int, int));
   void FDECL((*begin_tile_draw), (int, int));
   void FDECL((*draw_tile), (struct TileWindow *, int, int,
       int, int, tileidx_t, tilecol_t, tileflags_t, short));

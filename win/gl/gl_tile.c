@@ -568,6 +568,7 @@ struct TileWindow *sdlgl_new_tilewin(struct TileSet *set,
   win->pan_x = win->pan_y = 0;
   win->background = RGB_MAKE(0, 0, 0);
   win->curs_x = win->curs_y = -1;
+  win->hero_outline_x = win->hero_outline_y = -1;
   win->curs_w = 1;
   win->curs_block = 0;
   win->curs_color = OUTLINE_COL;
@@ -1038,6 +1039,28 @@ static void draw_tilewindow(struct TileWindow *win)
   tilecol_t tilecol = 0;
   struct TilePair *cur;
 
+  if (win->is_map)
+  {
+    int hero_x = -1, hero_y = -1;
+
+    if (Invis && isok(u.ux, u.uy))
+    {
+      hero_x = u.ux;
+      hero_y = win->total_h - 1 - u.uy;
+    }
+
+    /* The software renderer must also repaint the tile the outline left. */
+    if (hero_x != win->hero_outline_x || hero_y != win->hero_outline_y)
+    {
+      if (win->hero_outline_x >= 0)
+        mark_dirty_tiles(win, win->hero_outline_x, win->hero_outline_y, 1, 1);
+      if (hero_x >= 0)
+        mark_dirty_tiles(win, hero_x, hero_y, 1, 1);
+      win->hero_outline_x = hero_x;
+      win->hero_outline_y = hero_y;
+    }
+  }
+
   /* draw background.  Note: TILE_EMPTY guarantees that the background
    * may show through, even on non-text windows.
    */
@@ -1058,7 +1081,7 @@ static void draw_tilewindow(struct TileWindow *win)
    * drawn over (map) tiles.
    */
   if (win->curs_x >= 0 && win->curs_block)
-    sdlgl_draw_cursor(win);
+    sdlgl_draw_cursor(win, win->curs_x, win->curs_y, win->curs_w);
 
   sw = win->scale_w;
   sh = win->scale_h;
@@ -1166,8 +1189,11 @@ static void draw_tilewindow(struct TileWindow *win)
   for (n=0; n < win->extra_num; n++)
     sdlgl_draw_extra_shape(win, win->extra_shapes + n);
 
+  if (win->hero_outline_x >= 0)
+    sdlgl_draw_cursor(win, win->hero_outline_x, win->hero_outline_y, 1);
+
   if (win->curs_x >= 0 && ! win->curs_block)
-    sdlgl_draw_cursor(win);
+    sdlgl_draw_cursor(win, win->curs_x, win->curs_y, win->curs_w);
 
   sdlgl_disable_clipper();
 }
