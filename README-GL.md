@@ -17,7 +17,9 @@ The launcher opens a 1280×800 window using OpenGL. For software rendering:
 ```
 
 Page Up/Down zoom the map, Home centres on the player, and End switches
-between tiles and ASCII. Inventory and gameplay commands use EvilHack's
+between tiles and ASCII. Hold the right mouse button and drag on the map
+to browse without taking a turn; Home returns to the player. Middle-click
+retains the secondary map-click action. Inventory and gameplay commands use EvilHack's
 normal keyboard controls.
 
 The local installation, saves and settings are under `local/games/evilhackdir/`.
@@ -152,4 +154,11 @@ Extended-command regression test (no graphics output):
 ```sh
 cc -std=gnu17 -DGL_GRAPHICS -DUSE_TILES -Iinclude -ffunction-sections -fdata-sections tests/ext_commands.c -Wl,--gc-sections -o /tmp/evilhack-extcmd-test
 /tmp/evilhack-extcmd-test
+```
+
+Map-drag regression test (no display required):
+
+```sh
+cc -std=gnu17 -DGL_GRAPHICS -DUSE_TILES -Iinclude $(sdl-config --cflags) -ffunction-sections -fdata-sections tests/map_drag.c -Wl,--gc-sections -o /tmp/evilhack-map-test
+/tmp/evilhack-map-test
 ```

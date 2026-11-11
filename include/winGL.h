@@ -1150,6 +1150,7 @@ E void NDECL(sdlgl_center_screen_on_player);
 E void NDECL(sdlgl_toggle_text_view);
 E int FDECL(sdlgl_find_click, (int, int *, int *));
 E void FDECL(sdlgl_pan_map_window, (int, int));
+E void FDECL(sdlgl_pan_map_pixels, (int, int));
 
 
 /*

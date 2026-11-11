@@ -751,6 +751,7 @@ static int convert_keysym(int sym, int unicode, int mod)
 int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
 {
   SDL_Event ev;
+  int map_dragging = 0;
 
   for (;;)
   {
@@ -771,6 +772,8 @@ int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
         int repeat = 0;
 
         int key;
+
+        map_dragging = 0;
         
         /* check for auto-repeat */
         if (cur_key_sym == sym)
@@ -842,12 +845,26 @@ int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
         break;
 
       case SDL_MOUSEMOTION:
+        if (!(ev.motion.state & SDL_BUTTON(SDL_BUTTON_RIGHT)))
+          map_dragging = 0;
+        if (map_dragging && sdlgl_top_win == WIN_ERR)
+          sdlgl_pan_map_pixels(-ev.motion.xrel, ev.motion.yrel);
         sdlgl_internal_motion_handler(&ev.motion);
         break;
 
       case SDL_MOUSEBUTTONDOWN:
       {
         int window;
+
+        map_dragging = 0;
+        sdlgl_update_mouse_location(0);
+        if (ev.button.button == SDL_BUTTON_RIGHT &&
+            sdlgl_top_win == WIN_ERR && sdlgl_map_win != WIN_ERR &&
+            sdlgl_mouseloc.window == sdlgl_map_win)
+        {
+          map_dragging = 1;
+          break;
+        }
 
         if (sdlgl_internal_button_handler(&ev.button))
           break;
@@ -882,6 +899,11 @@ int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
         return 0;
       }
 
+      case SDL_MOUSEBUTTONUP:
+        if (ev.button.button == SDL_BUTTON_RIGHT)
+          map_dragging = 0;
+        break;
+
       case SDL_ACTIVEEVENT:
         if (ev.active.gain)
         {
@@ -890,6 +912,7 @@ int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
         }
         else
         {
+          map_dragging = 0;
           sdlgl_update_mouse_location(1);
         }
         break;

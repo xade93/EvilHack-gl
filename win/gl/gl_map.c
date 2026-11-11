@@ -960,7 +960,6 @@ void sdlgl_pan_map_window(int dx, int dy)
 
   int tw, th;
   int show_w, show_h;
-  int map_w, map_h;
 
   if (sdlgl_map_win == WIN_ERR)
     return;
@@ -977,10 +976,6 @@ void sdlgl_pan_map_window(int dx, int dy)
 
   show_w = max(1, win->base->scr_w / tw);
   show_h = max(1, win->base->scr_h / th);
-
-  map_w = win->base->total_w * win->base->scale_w +
-          win->base->total_h * win->base->scale_skew;
-  map_h = win->base->total_h * win->base->scale_h;
 
   switch (abs(dx))
   {
@@ -1014,6 +1009,28 @@ void sdlgl_pan_map_window(int dx, int dy)
 
   dx *= tw;
   dy *= th;
+
+  sdlgl_pan_map_pixels(dx, dy);
+}
+
+void sdlgl_pan_map_pixels(int dx, int dy)
+{
+  struct TextWindow *win;
+  int tw, th, map_w, map_h;
+
+  if (sdlgl_map_win == WIN_ERR)
+    return;
+
+  win = text_wins[sdlgl_map_win];
+  assert(win && win->base);
+  if (win->base->is_text)
+    return;
+
+  tw = win->base->scale_w;
+  th = win->base->scale_h;
+  map_w = win->base->total_w * tw +
+          win->base->total_h * win->base->scale_skew;
+  map_h = win->base->total_h * th;
 
   /* limit the amount moved so that the map stays on-screen.
    */
