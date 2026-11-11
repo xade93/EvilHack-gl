@@ -5,11 +5,16 @@
 experience that the original
 - "**glhack**" is a SDL2/OpenGL based tile version of original nethack
 - **This repo** ("evilhack-gl") aims to refactor existing GUI shipped with Evilhack, incorporating the visual effects from
-  1. `glhack` and its SLASH'EM port
+  1. `glhack` and its SLASH'EM port 
   2. QoL from ncurses interface e.g. visual HP/MP bars, autodim message histories, extended command prompts
-  3. misc updates I find interesting along the way while trying to be faithful to original experience
+  3. misc updates I find interesting along the way while trying to be faithful to original experience e.g. right click drag to pan the map for low resolution scenarios
 
-**Disclosure**: LLMs are heavily used in the process, although they are limited to frontend only and should not touch underlying Evilhack logic.
+This repo tries to keep change to 
+1. frontend only, so no touching Evilhack logic
+2. should not give player unfair advantage by providing extra information (as en example, showing a tiny hint when player is invisible does not count as unfair advantage, since player can acquire his location at anytime in vanilla by using ; to check anyways)
+3. faithful to the original experience
+
+**Disclosure**: LLMs are heavily used in the process, although they are limited to frontend only and should not touch underlying Evilhack logic. Arts / Tilesets are also taken directly from parent repo's set, so no AI generated art is used. 
 
 Screenshot:
 <img width="1268" height="795" alt="image" src="https://github.com/user-attachments/assets/0e4849a1-0c90-442a-b0a3-7b353f88ab30" />
