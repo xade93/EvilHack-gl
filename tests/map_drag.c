@@ -3,9 +3,10 @@
 #include "../win/gl/gl_map.c"
 
 struct instance_flags iflags;
+struct sinfo program_state;
 winid WIN_MESSAGE = WIN_ERR;
 int sdlgl_height = 800;
-void hangup(int sig) { abort(); }
+void hangup(int sig) { ++program_state.done_hup; }
 void clearlocks(void) { abort(); }
 void nh_terminate(int status) { abort(); }
 void sdlgl_free_mouse_cursors(void) {}
@@ -131,5 +132,13 @@ int main(void)
   base.is_text = 1;
   sdlgl_pan_map_pixels(25, 25);
   assert(win.map_px == 192 && win.map_py == 128);
+
+  events[event_count++].type = SDL_QUIT;
+  {
+    int x, y, mod;
+    assert(sdlgl_get_poskey(0, &x, &y, &mod) == '\033');
+    assert(program_state.done_hup == 1 && event_pos == event_count);
+    assert(sdlgl_get_key(0) == '\033');
+  }
   return 0;
 }

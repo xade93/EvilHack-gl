@@ -218,14 +218,6 @@ void sdlgl_hangup(const char *str, ...)
   }
 
   hangup(1);
-
-  /* NOT REACHED */
-  
-  clearlocks();
-  Sdlgl_exit_nhwindows("");
-  nh_terminate(EXIT_SUCCESS);
-
-  /* NOT REACHED -- AGAIN! */
 }
 
 void Sdlgl_nhbell(void)
@@ -755,6 +747,9 @@ int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
 
   for (;;)
   {
+    if (program_state.done_hup)
+      return '\033';
+
     if (SDL_PollEvent(&ev) == 0)
     {
       /* wait for input to come */
@@ -842,7 +837,8 @@ int sdlgl_get_poskey(int flags, int *x, int *y, int *mod)
 
       case SDL_QUIT:
         sdlgl_hangup("Received QUIT signal from SDL.\n");
-        break;
+        /* SAFERHANGUP lets the active input unwind before the game saves. */
+        return '\033';
 
       case SDL_MOUSEMOTION:
         if (!(ev.motion.state & SDL_BUTTON(SDL_BUTTON_RIGHT)))
