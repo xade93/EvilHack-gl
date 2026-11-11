@@ -8,11 +8,8 @@ if [ ! -e "$playground" ]; then
     first_install=true
 fi
 ./build-gl.sh
-# Only seed a new installation; subsequent installs preserve its own characters/config.
+# Only seed configuration on a new installation; saves stay independent.
 if "$first_install" && [ "$playground" != "$PWD/local/games/evilhackdir" ]; then
-    if [ -d local/games/evilhackdir/var/save ]; then
-        cp -a local/games/evilhackdir/var/save/. "$playground/var/save/"
-    fi
     if [ -f local/games/evilhackdir/evilhack-gl.conf ]; then
         cp local/games/evilhackdir/evilhack-gl.conf "$playground/evilhack-gl.conf"
     fi

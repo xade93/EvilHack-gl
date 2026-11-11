@@ -44,10 +44,9 @@ menu with the bundled game icon. Its context menu offers software rendering.
 The checkout can subsequently be moved or removed without breaking that
 installation. Save and exit the game before installing or updating.
 
-On first install, saved characters and config are copied from this checkout's
-`local/` installation; the originals are left intact. Subsequent installs
-preserve the installed saves and config. The two installations keep separate
-progress after that initial copy. Re-run the installer to update the desktop
+On first install, only config is copied from this checkout's `local/`
+installation. Saves are never copied between installations. Subsequent
+installs preserve the installed saves and config. Re-run the installer to update the desktop
 version; `run-gl.sh` continues to launch the checkout's local version.
 
 `EVILHACK_PREFIX` overrides the install prefix, and `XDG_DATA_HOME` controls
